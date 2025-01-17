@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Input} from "../../../common/components/Input";
 import {useAppDispatch, useAppSelector} from "../../../app/store";
 import {selectMaxValue, selectStartValue} from "../../model/counter-selector";
@@ -6,7 +6,7 @@ import {
     changeIsValuesChangedAC,
     changeMaxValueAC,
     changeStartValueAC,
-    setCounterStartValueAC
+    setCounterStartValueAC, setValuesFromLocalStorageTC, setValuesToLocalStorageTC
 } from "../../model/counter-reducer";
 import {Button} from "../../../common/components/Button";
 
@@ -15,9 +15,16 @@ export const Params = () => {
     const maxValue = useAppSelector(selectMaxValue)
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        dispatch(setValuesFromLocalStorageTC())
+    }, []);
+
     const setValue = () => {
-        dispatch(changeIsValuesChangedAC(false))
-        dispatch(setCounterStartValueAC())
+        if (!getError()) {
+            dispatch(changeIsValuesChangedAC(false))
+            dispatch(setCounterStartValueAC())
+            dispatch(setValuesToLocalStorageTC())
+        }
     }
 
     const changeMaxValue = (value: number) => {
@@ -30,13 +37,18 @@ export const Params = () => {
         dispatch(changeIsValuesChangedAC(true))
     }
 
+    const getError = () => {
+        if (startValue >= maxValue) return true
+        return startValue < 0;
+    }
+
     return (
         <div className="params">
             <p>Max value:</p>
-            <Input value={maxValue} onChange={(value: number) => changeMaxValue(value)}/>
+            <Input error={getError()} value={maxValue} onChange={(value: number) => changeMaxValue(value)}/>
             <p>Start value:</p>
-            <Input value={startValue} onChange={(value: number) => changeStartValue(value)}/>
-            <Button callback={setValue}>Set</Button>
+            <Input error={getError()} value={startValue} onChange={(value: number) => changeStartValue(value)}/>
+            <Button disabled={getError()} callback={setValue}>Set</Button>
         </div>
     )
 }

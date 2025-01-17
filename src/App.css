@@ -9,6 +9,8 @@
     border: black solid 1px;
     width: 100px;
     align-items: center;
+    text-align: center;
+    justify-content: center;
 }
 
 .params{
@@ -25,4 +27,8 @@
 
 .buttonsBlock {
     display: flex;
+}
+
+.inputError{
+    outline: red solid 2px;
 }

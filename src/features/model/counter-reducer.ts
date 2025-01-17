@@ -1,3 +1,6 @@
+import {Dispatch} from "@reduxjs/toolkit";
+import {RootState} from "../../app/store";
+
 type InitialStateType = {
     counter: number
     startValue: number
@@ -15,7 +18,7 @@ const initialState: InitialStateType = {
 export const counterReducer = (state: InitialStateType = initialState, action: ActionTypes) => {
     switch (action.type) {
         case "INCREMENT-COUNTER":
-            return {...state, counter: state.counter + 1}
+            return state.counter < action.maxValue ? {...state, counter: state.counter + 1} : state
         case "SET-COUNTER-START-VALUE":
             return {...state, counter: state.startValue}
         case 'RESET-COUNTER':
@@ -26,13 +29,15 @@ export const counterReducer = (state: InitialStateType = initialState, action: A
             return {...state, maxValue: action.value}
         case "CHANGE-IS-VALS-CHANGE":
             return {...state, isValuesChanged: action.isValuesChanged}
+        case "SET-VALUES-FROM-LS":
+            return action.state
         default:
             return state
     }
 }
 
-export const incrementCounterAC = () => {
-    return {type: 'INCREMENT-COUNTER'} as const
+export const incrementCounterAC = (maxValue: number) => {
+    return {type: 'INCREMENT-COUNTER', maxValue} as const
 }
 
 export const setCounterStartValueAC = () => {
@@ -55,12 +60,27 @@ export const changeIsValuesChangedAC = (isValuesChanged: boolean) => {
     return {type: 'CHANGE-IS-VALS-CHANGE', isValuesChanged} as const
 }
 
+export const setValuesFromLocalStorageAC = (state: InitialStateType) => {
+    return {type: "SET-VALUES-FROM-LS", state} as const
+}
+
+export const setValuesToLocalStorageTC = () => (dispatch: Dispatch, getState: () => RootState) => {
+    localStorage.setItem('state', JSON.stringify(getState().counter))
+}
+
+export const setValuesFromLocalStorageTC = () => (dispatch: Dispatch) => {
+    const state = localStorage.getItem('state')
+    if (state)
+        dispatch(setValuesFromLocalStorageAC(JSON.parse(state)))
+}
+
 export type IncrementCounterActionType = ReturnType<typeof incrementCounterAC>
 export type ResetCounterActionType = ReturnType<typeof resetCounterAC>
 export type ChangeStartValueActionType = ReturnType<typeof changeStartValueAC>
 export type ChangeMaxValueActionType = ReturnType<typeof changeMaxValueAC>
 export type ChangeIsValuesChangedActionType = ReturnType<typeof changeIsValuesChangedAC>
 export type SetCounterStartValueActionType = ReturnType<typeof setCounterStartValueAC>
+export type SetValuesFromLocalStorageActionType = ReturnType<typeof setValuesFromLocalStorageAC>
 
 export type ActionTypes =
     IncrementCounterActionType
@@ -69,3 +89,4 @@ export type ActionTypes =
     | ChangeStartValueActionType
     | ChangeMaxValueActionType
     | ChangeIsValuesChangedActionType
+    | SetValuesFromLocalStorageActionType
