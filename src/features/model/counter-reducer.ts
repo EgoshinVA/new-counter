@@ -1,7 +1,7 @@
 import {Dispatch} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 
-type InitialStateType = {
+export type InitialStateType = {
     counter: number
     startValue: number
     maxValue: number
@@ -21,8 +21,6 @@ export const counterReducer = (state: InitialStateType = initialState, action: A
             return state.counter < action.maxValue ? {...state, counter: state.counter + 1} : state
         case "SET-COUNTER-START-VALUE":
             return {...state, counter: state.startValue}
-        case 'RESET-COUNTER':
-            return {...state, counter: action.startValue}
         case "CHANGE-START-VALUE":
             return {...state, startValue: action.value}
         case "CHANGE-MAX-VALUE":
@@ -42,10 +40,6 @@ export const incrementCounterAC = (maxValue: number) => {
 
 export const setCounterStartValueAC = () => {
     return {type: 'SET-COUNTER-START-VALUE'} as const
-}
-
-export const resetCounterAC = (startValue: number) => {
-    return {type: 'RESET-COUNTER', startValue} as const
 }
 
 export const changeStartValueAC = (value: number) => {
@@ -75,7 +69,6 @@ export const setValuesFromLocalStorageTC = () => (dispatch: Dispatch) => {
 }
 
 export type IncrementCounterActionType = ReturnType<typeof incrementCounterAC>
-export type ResetCounterActionType = ReturnType<typeof resetCounterAC>
 export type ChangeStartValueActionType = ReturnType<typeof changeStartValueAC>
 export type ChangeMaxValueActionType = ReturnType<typeof changeMaxValueAC>
 export type ChangeIsValuesChangedActionType = ReturnType<typeof changeIsValuesChangedAC>
@@ -85,7 +78,6 @@ export type SetValuesFromLocalStorageActionType = ReturnType<typeof setValuesFro
 export type ActionTypes =
     IncrementCounterActionType
     | SetCounterStartValueActionType
-    | ResetCounterActionType
     | ChangeStartValueActionType
     | ChangeMaxValueActionType
     | ChangeIsValuesChangedActionType
