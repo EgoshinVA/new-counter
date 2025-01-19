@@ -1,12 +1,12 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Input} from "../../../common/components/Input";
 import {useAppDispatch, useAppSelector} from "../../../app/store";
 import {selectMaxValue, selectStartValue} from "../../model/counter-selector";
 import {
-    changeIsValuesChangedAC,
-    changeMaxValueAC,
-    changeStartValueAC,
-    setCounterStartValueAC, setValuesFromLocalStorageTC, setValuesToLocalStorageTC
+    changeIsValuesChanged,
+    changeMaxValue,
+    changeStartValue,
+    resetCounter,
 } from "../../model/counter-reducer";
 import {Button} from "../../../common/components/Button";
 
@@ -15,26 +15,21 @@ export const Params = () => {
     const maxValue = useAppSelector(selectMaxValue)
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        dispatch(setValuesFromLocalStorageTC())
-    }, []);
-
     const setValue = () => {
         if (!getError()) {
-            dispatch(changeIsValuesChangedAC(false))
-            dispatch(setCounterStartValueAC())
-            dispatch(setValuesToLocalStorageTC())
+            dispatch(changeIsValuesChanged(false))
+            dispatch(resetCounter())
         }
     }
 
-    const changeMaxValue = (value: number) => {
-        dispatch(changeMaxValueAC(value))
-        dispatch(changeIsValuesChangedAC(true))
+    const changeMaxValueHandler = (value: number) => {
+        dispatch(changeMaxValue(value))
+        dispatch(changeIsValuesChanged(true))
     }
 
-    const changeStartValue = (value: number) => {
-        dispatch(changeStartValueAC(value))
-        dispatch(changeIsValuesChangedAC(true))
+    const changeStartValueHandler = (value: number) => {
+        dispatch(changeStartValue(value))
+        dispatch(changeIsValuesChanged(true))
     }
 
     const getError = () => {
@@ -45,9 +40,9 @@ export const Params = () => {
     return (
         <div className="params">
             <p>Max value:</p>
-            <Input error={getError()} value={maxValue} onChange={(value: number) => changeMaxValue(value)}/>
+            <Input error={getError()} value={maxValue} onChange={(value: number) => changeMaxValueHandler(value)}/>
             <p>Start value:</p>
-            <Input error={getError()} value={startValue} onChange={(value: number) => changeStartValue(value)}/>
+            <Input error={getError()} value={startValue} onChange={(value: number) => changeStartValueHandler(value)}/>
             <Button disabled={getError()} callback={setValue}>Set</Button>
         </div>
     )
