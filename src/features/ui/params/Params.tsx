@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Input} from "../../../common/components/Input";
 import {useAppDispatch, useAppSelector} from "../../../app/store";
 import {selectMaxValue, selectStartValue} from "../../model/counter-selector";
@@ -6,7 +6,7 @@ import {
     changeIsValuesChanged,
     changeMaxValue,
     changeStartValue,
-    resetCounter,
+    resetCounter, SetToLsTC,
 } from "../../model/counter-reducer";
 import {Button} from "../../../common/components/Button";
 
@@ -19,6 +19,7 @@ export const Params = () => {
         if (!getError()) {
             dispatch(changeIsValuesChanged(false))
             dispatch(resetCounter())
+            dispatch(SetToLsTC())
         }
     }
 

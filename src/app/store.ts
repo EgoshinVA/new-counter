@@ -1,30 +1,21 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
-import {thunk} from "redux-thunk";
 import {useDispatch, useSelector} from "react-redux";
-import counterReducer, {initialState} from "../features/model/counter-reducer";
+import counterReducer from "../features/model/counter-reducer";
 
 const rootReducer = combineReducers({
     counter: counterReducer
 })
 
-const preloadedState = {
-    counter: initialState,
-}
-
-const stateFromLocalStorage = localStorage.getItem('state')
-if (stateFromLocalStorage) {
-    preloadedState.counter = JSON.parse(stateFromLocalStorage)
+let preloadedState
+const getFromLS = localStorage.getItem("state");
+if (getFromLS) {
+    preloadedState = JSON.parse(getFromLS);
 }
 
 export const store = configureStore({
     reducer: rootReducer,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(thunk),
     preloadedState
 });
-
-store.subscribe(() => {
-    localStorage.setItem('state', JSON.stringify(store.getState().counter))
-})
 
 export type RootState = ReturnType<typeof store.getState>
 

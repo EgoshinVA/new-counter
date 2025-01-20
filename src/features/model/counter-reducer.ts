@@ -38,4 +38,8 @@ export const {
     incrementCounter
 } = counterSlice.actions;
 
+export const SetToLsTC = () => (dispatch: Dispatch, getState: () => RootState) => {
+    localStorage.setItem("state", JSON.stringify(getState()))
+}
+
 export default counterSlice.reducer;
